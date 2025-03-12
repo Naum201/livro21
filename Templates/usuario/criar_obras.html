@@ -1,0 +1,148 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center my-4">Publicar Novo Livro</h1>
+
+    <div class="row">
+        <!-- Seção: Já Publicado / Publicar -->
+        <div class="col-md-6">
+            <div class="card text-center">
+                <div class="card-header bg-primary text-white">PÁGINA DE UPLOAD</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <button class="btn btn-primary w-100">JÁ PUBLICADO</button>
+                            <div class="mt-3">
+                                <!-- Exibir as obras já publicadas -->
+                                {% for obra in obras_publicadas %}
+                                <div class="mb-3 text-black">
+                                    <img src="{{ url_for('static', filename='uploads/capas/' + obra.capa) }}" style="width: 285px; height: 295px; object-fit: cover;" class="rounded" alt="Capa de {{ obra.titulo }}">
+                                    <h5>{{ obra.titulo }}</h5>
+                                    <p><strong>Etapa:</strong> {{ obra.etapa }}</p>
+                                    <p><strong>Sinopse:</strong> {{ obra.sinopse[:200] }}...</p>
+                                    <a class="nav-link" href="{{ url_for('editar_obra', obra_id=obra.id) }}">Editar Obra</a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-primary w-100">PUBLICAR</button>
+                            <div class="mt-3  text-black">
+                                <!-- Exibir as obras em rascunho -->
+                                {% for obra in obras_rascunhos %}
+                                <div class="mb-3">
+                                    <img src="{{ url_for('static', filename='uploads/capas/' + obra.capa) }}" style="width: 285px; height: 295px; object-fit: cover;" class="rounded" alt="Capa de {{ obra.titulo }}">
+                                    <h5>{{ obra.titulo }}</h5>
+                                    <p><strong>Etapa:</strong> {{ obra.etapa }}</p>
+                                    <p><strong>Sinopse:</strong> {{ obra.sinopse[:200] }}...</p>
+                                    <a class="nav-link" href="{{ url_for('editar_obra', obra_id=obra.id) }}">Editar Obra</a>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seção: Publicar Novo Livro -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">PUBLICAR NOVO LIVRO</div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data" id="form-publicar">
+                        <div class="mb-3">
+                            <label for="capa" class="form-label text-black">Capa da Obra</label>
+                            <input type="file" class="form-control text-black" id="capa" name="capa">
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label text-black">Título</label>
+                            <input type="text" class="form-control text-black" id="titulo" name="titulo" required>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="sinopse" class="form-label text-black">Sinopse</label>
+                            <textarea class="form-control text-black" id="sinopse" name="sinopse" rows="4" required></textarea>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="genero" class="form-label text-black">Gênero</label>
+                            <select class="form-control text-black" id="genero" name="genero" required>
+                                {% for genero in generos %}
+                                    <option value="{{ genero.id }}">{{ genero.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Campo para Tags -->
+                        <div class="form-group mb-3">
+                            <label for="tags" class="form-label text-black">Tags</label>
+                            <input type="text" id="tags" name="tags" class="form-control" placeholder="Digite as tags, separadas por vírgula" value="{{ request.form.get('tags') }}">
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="classificacao" class="form-label text-black">Classificação</label>
+                            <input type="text" class="form-control text-black" id="classificacao" name="classificacao" required>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="etapa" class="form-label text-black">Etapa</label>
+                            <select class="form-control text-black" id="etapa" name="etapa" required>
+                                <option value="Concluida">Concluída</option>
+                                <option value="Andamento">Em Andamento</option>
+                            </select>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="status" class="form-label text-black">Status</label>
+                            <select class="form-control" id="status" name="status" required>
+                                <option value="Rascunho">Rascunho</option>
+                                <option value="Publicado">Publicado</option>
+                            </select>
+                        </div>
+                    
+                        <div class="mb-3">
+                            <label for="plataformas" class="form-label text-black">Plataformas</label>
+                            <select class="form-control text-black" id="plataformas" name="plataformas" required>
+                                {% for plataforma in plataformas %}
+                                    <option value="{{ plataforma.id }}">{{ plataforma.nome }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">Salvar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seção adicional com opções -->
+    <div class="row mt-4">
+        <div class="col-md-6 offset-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5>PLATAFORMAS</h5>
+                    <p>Verificador de Plágio</p>
+                    <p>Análise em IA</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para o Select2 -->
+<script>
+    $(document).ready(function() {
+        $('#tags').select2({
+            placeholder: "Digite ou selecione tags",
+            tags: true,
+            tokenSeparators: [',', ' '],
+            width: '100%'  // Fazendo o campo ocupar toda a largura disponível
+        });
+    });
+</script>
+
+{% endblock %}

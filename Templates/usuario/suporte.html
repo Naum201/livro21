@@ -1,0 +1,23 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+    <h1>Relatar um Problema</h1>
+    <form method="POST" action="{{ url_for('suporte') }}">
+        <div>
+            <label for="problema">Descreva o problema:</label><br>
+            <textarea name="problema" id="problema" rows="4" cols="50" required></textarea><br><br>
+        </div>
+
+        <button type="submit">Enviar</button>
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+{% endblock %}

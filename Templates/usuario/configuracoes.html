@@ -1,0 +1,89 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Configurações do Usuário</h1>
+
+    <!-- Nav Tabs -->
+    <ul class="nav nav-tabs" id="configTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="conta-tab" data-toggle="tab" href="#conta" role="tab">Conta</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="notificacoes-tab" data-toggle="tab" href="#notificacoes" role="tab">Notificações</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="preferencias-tab" data-toggle="tab" href="#preferencias" role="tab">Preferências de Conteúdo</a>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content mt-3" id="configTabsContent">
+        <!-- Aba Conta -->
+        <div class="tab-pane fade show active" id="conta" role="tabpanel">
+            <form method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="username">Nome de usuário</label>
+                    <input type="text" class="form-control" id="username" name="username" value="{{ usuario_logado.username }}">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ usuario_logado.email }}">
+                </div>
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea class="form-control" id="bio" name="bio">{{ usuario_logado.bio }}</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="data_nascimento">Data de Nascimento</label>
+                    <input type="date" class="form-control" id="data_nascimento" name="data_nascimento" value="{% if usuario_logado.data_nascimento %}{{ usuario_logado.data_nascimento.strftime('%Y-%m-%d') }}{% endif %}">
+                </div>
+                <div class="form-group">
+                    <label for="foto_perfil">Foto de Perfil</label>
+                    <input type="file" class="form-control-file" id="foto_perfil" name="foto_perfil">
+                    {% if usuario_logado.imagens %}
+                        <img src="{{ url_for('static', filename='uploads/' + usuario_logado.imagens) }}" alt="Imagem de Perfil" class="img-fluid mt-3" style="max-width: 150px;">
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="senha">Nova Senha</label>
+                    <input type="password" class="form-control" id="senha" name="senha">
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Salvar Alterações</button>
+            </form>
+            <form method="POST" action="{{ url_for('deletar_conta') }}">
+                <button type="submit" class="btn btn-danger mt-3" onclick="return confirm('Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita.')">Deletar Conta</button>
+            </form>
+        </div>
+        
+        <!-- Aba Notificações -->
+        <div class="tab-pane fade" id="notificacoes" role="tabpanel">
+            <form method="POST">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="notificacoes" name="notificacoes" {% if usuario_logado.notificacoes %}checked{% endif %}>
+                    <label class="form-check-label" for="notificacoes">Receber notificações</label>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Salvar Alterações</button>
+            </form>
+        </div>
+
+        <!-- Aba Preferências de Conteúdo -->
+        <div class="tab-pane fade" id="preferencias" role="tabpanel">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="preferencia_conteudo">Preferências de Conteúdo</label>
+                    <input type="text" class="form-control" id="preferencia_conteudo" name="preferencia_conteudo" value="{{ usuario_logado.preferencia_conteudo }}">
+                </div>
+                
+                <button type="submit" class="btn btn-primary mt-3">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts necessários para as abas do Bootstrap -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center my-4">Tags e Ranking das Obras Mais Lidas</h1>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">Tags</div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for tag in tags %}
+                        <li class="list-group-item">
+                            <h5>{{ tag.nome }}</h5>
+
+                            <!-- Exibindo o ranking das obras mais lidas dessa tag -->
+                            <h6>Obras mais lidas:</h6>
+                            <ul>
+                                {% for obra in obras_por_tag[tag] %}
+                                <li>
+                                    <img src="{{ url_for('static', filename='uploads/capas/' + obra.capa) }}" style="width: 50px; height: 75px; object-fit: cover;" class="rounded" alt="Capa de {{ obra.titulo }}">
+                                    <a href="{{ url_for('obra_details', obra_id=obra.id) }}">{{ obra.titulo }}</a>
+                                    <p><strong>Visualizações:</strong> {{ obra.visualizacoes }}</p>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

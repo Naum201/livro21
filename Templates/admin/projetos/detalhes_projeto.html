@@ -1,0 +1,77 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}{{ projeto.nome }} - Detalhes{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>{{ projeto.nome }}</h2>
+    <p><strong>Administrador:</strong> {{ projeto.admin_projeto }}</p>
+    <p><strong>Descrição:</strong> {{ projeto.descricao }}</p>
+    <p><strong>Data de Início:</strong> {{ projeto.data_inicio.strftime('%d/%m/%Y') if projeto.data_inicio else 'Não informado' }}</p>
+    <p><strong>Data de Fim:</strong> {{ projeto.data_fim.strftime('%d/%m/%Y') if projeto.data_fim else 'Em andamento' }}</p>
+
+    <h3>Estatísticas do Projeto</h3>
+    <p><strong>Total de Participantes:</strong> {{ total_participantes }}</p>
+
+    <h4>Participantes e suas Estatísticas</h4>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Usuário</th>
+                <th>Número de Obras</th>
+                <th>Média de Votos</th>
+                <th>Média de Visualizações</th>
+                <th>Média de Likes</th>
+                <th>Número de Capítulos</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in estatisticas_usuarios %}
+                <tr>
+                    <td>{{ stat.usuario.username }}</td>
+                    <td>{{ stat.numero_obras }}</td>
+                    <td>{{ stat.media_votos }}</td>
+                    <td>{{ stat.media_visualizacoes }}</td>
+                    <td>{{ stat.media_likes }}</td>
+                    <td>{{ stat.numero_capitulos }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3>Grades de Leitura</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Obra</th>
+                <th>Leitor(es)</th>
+                <th>Data de Criação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grade_info in grades %}
+                <tr>
+                    <td>{{ grade_info.grade.obra.titulo }}</td>
+                    <td>
+                        {% if grade_info.leitores %}
+                            {% if grade_info.leitores is iterable %}
+                                {% for leitor in grade_info.leitores %}
+                                    <span>{{ leitor.username }}</span><br>
+                                {% endfor %}
+                            {% else %}
+                                <span>{{ grade_info.leitores.username }}</span>
+                            {% endif %}
+                        {% else %}
+                            <span>Sem leitores</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ grade_info.grade.data_criacao.strftime('%d/%m/%Y') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ url_for('cadastrar_grade_leitura', projeto_id=projeto.id) }}" class="btn btn-primary">Cadastrar Grade</a>
+    <a href="{{ url_for('listar_projetos') }}" class="btn btn-primary">Voltar</a>
+</div>
+{% endblock %}

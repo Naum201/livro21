@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Login</h2>
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Senha</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <p><a href="{{ url_for('cadastro') }}">Não possui conta? Registre-se</Registre-se></a></p>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        
+    </form>
+</div>
+{% endblock %}

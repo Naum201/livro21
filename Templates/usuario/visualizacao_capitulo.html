@@ -1,0 +1,76 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+<div class="container mt-5 ">
+    <!-- Cabeçalho do Capítulo -->
+    <div class="capitulo-header text-center mb-4 text-white">
+        <h1 class="capitulo-titulo display-4 ">{{ capitulo.titulo }}</h1>
+    </div>
+
+    <!-- Corpo do Capítulo -->
+    <div class="capitulo-body p-4 bg-light rounded shadow-sm text-black " style="user-select: none;">
+        <p class="fs-5">{{ capitulo.conteudo | safe }}</p> <!-- Exibe o conteúdo com HTML seguro -->
+    </div>
+
+   <!-- Rodapé do Capítulo -->
+    <div class="capitulo-footer mt-4">
+        <div class="capitulo-info d-flex justify-content-between align-items-center">
+            <p class="mb-0">
+                <strong>Visualizações:</strong> {{ capitulo.visualizacoes }} |
+                <strong>Votos:</strong> {{ capitulo.votos }}
+            </p>
+
+            <!-- Se o usuário já votou, exibe a mensagem, senão exibe o botão de voto -->
+            {% if voto_existente %}
+                <p class="alert alert-info mb-0">Você já votou neste capítulo.</p>
+            {% else %}
+                <form method="POST" class="voto-form">
+                    <button type="submit" name="voto" class="btn btn-primary">
+                        <i class="fas fa-thumbs-up"></i> Votar
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Exibição das Mensagens de Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert-container">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} mt-3">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Seção de Comentários -->
+    <div class="comentarios-section mt-5">
+        <h3 class="comentarios-titulo mb-4">
+            <i class="fas fa-comments"></i> Comentários:
+        </h3>
+        <ul class="list-group mb-4">
+            {% for comentario in comentarios %}
+                <li class="list-group-item">
+                    <strong>{{ comentario.usuario.username }}:</strong> {{ comentario.texto }}
+                </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Formulário de Comentário -->
+        <h3 class="comentarios-titulo mb-3">
+            <i class="fas fa-comment-dots"></i> Deixe seu comentário:
+        </h3>
+        <form method="POST" class="comentario-form">
+            <div class="mb-3">
+                <textarea name="comentario" rows="4" class="form-control" placeholder="Escreva seu comentário..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-paper-plane"></i> Enviar Comentário
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

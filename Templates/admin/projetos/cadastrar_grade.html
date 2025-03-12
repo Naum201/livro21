@@ -1,0 +1,50 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Cadastrar Grade de Leitura - {{ projeto.nome_projeto }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h5 class="card-title">Cadastrar Grade de Leitura para o Projeto: {{ projeto.nome_projeto }}</h5>
+    
+    <div class="row">
+        <div class="col-md-8">
+            <h6>Adicionar Obras à Grade</h6>
+
+            <!-- Exibe mensagens de erro ou sucesso -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="alert alert-{{ messages[0][0] }}" role="alert">
+                        {{ messages[0][1] }}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="obra_id" class="form-label">Selecione uma Obra</label>
+                    <select id="obra_id" name="obra_id" class="form-select" required>
+                        <option value="" disabled selected>Escolha uma obra...</option>
+                        {% for obra in obras_disponiveis %}
+                            <option value="{{ obra.id }}">{{ obra.titulo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Adicionar à Grade</button>
+                <a href="{{ url_for('detalhes_projeto', projeto_id=projeto.id) }}" class="btn btn-secondary">Voltar</a>
+            </form>
+        </div>
+
+        <div class="col-md-4">
+            <h6>Obras já Cadastradas na Grade</h6>
+            <ul class="list-group">
+                {% for obra in projeto.obras %}
+                    <li class="list-group-item">
+                        {{ obra.titulo }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

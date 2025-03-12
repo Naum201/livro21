@@ -1,0 +1,146 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+<div class="container mt-5" style="padding-top: 70px;">
+    <h1 class="text-center mb-5">Bem-vindo, {{ usuario.username }}!</h1>
+
+    <!-- Seção de Concurso Mensal -->
+    {% if concurso_ativo %}
+    <section class="mb-5">
+        <h2 class="text-center">Top 3 Obras do Concurso</h2>
+        <div id="carousel-destaques" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner text-center">
+            {% for engajamento in engajamentos_mensais %}
+            <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <div class="d-flex justify-content-center">
+            <center><div class="card mx-2" style="width: 18rem;">
+                <img src="{{ url_for('static', filename='uploads/capas/' + engajamento.capa) }}" 
+                         class="card-img-top" style="width: 285px; height: 300px; object-fit: cover;" alt="Capa de {{ engajamento.titulo }}">
+                         <div class="card-body">
+                            <h5 class="card-title text-black">{{ engajamento.titulo }}</h5>
+                            <p class="card-text">
+                                Visualizações: {{ engajamento.visualizacoes }} | 
+                                Votos: {{ engajamento.votos }} | 
+                                Comentários: {{ engajamento.comentarios }}
+                            </p>
+                            <a href="{{ url_for('obra_detalhes', obra_id=engajamento.id) }}" class="btn btn-primary">Ver Detalhes</a>
+                        </div>
+                    </div>
+            </div></center>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Carrossel de Destaques -->
+    <section class="mb-5">
+        <h2 class="text-center">Destaques</h2>
+        <div id="carousel-destaques" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner text-center">
+                {% for obra in obras_mais_lidas|batch(5) %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <div class="d-flex justify-content-center">
+                        {% for item in obra %}
+                        <div class="card mx-2" style="width: 18rem;">
+                            <img src="{{ url_for('static', filename='uploads/capas/' + item.capa) }}" 
+                                 class="rounded" style="width: 285px; height: 300px; object-fit: cover;" 
+                                 alt="Capa de {{ item.titulo }}">
+                            <div class="card-body">
+                                <h5 class="card-title text-black">{{ item.titulo }}</h5>
+                                <h6 class="card-text">{{ item.etapa }}</h5>
+                                <p class="card-text">{{ item.sinopse[:100] }}...</p>
+                                <a href="{{ url_for('obra_detalhes', obra_id=item.id) }}" class="btn btn-primary btn-sm">Detalhes</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-destaques" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel-destaques" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Seção de Obras do Usuário -->
+    <section class="mb-5">
+        <h2 class="text-center">Suas Obras</h2>
+        <div id="carousel-usuario" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner text-center">
+                {% for obra_group in obras_usuario|batch(5) %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <div class="d-flex justify-content-center">
+                        {% for obra in obra_group %}
+                        <div class="card mx-2" style="width: 18rem;">
+                            <img src="{{ url_for('static', filename='uploads/capas/' + obra.capa) }}" 
+                                 class="rounded" style="width: 285px; height: 300px; object-fit: cover; " 
+                                 alt="Capa de {{ obra.titulo }}">
+                            <div class="card-body">
+                                <h5 class="card-title text-black">{{ obra.titulo }}</h5>
+                                <p class="card-text">{{ obra.etapa }}...</p>
+                                <p class="card-text">{{ obra.sinopse[:100] }}...</p>
+                                <a href="{{ url_for('obra_detalhes', obra_id=obra.id) }}" class="btn btn-primary btn-sm">Detalhes</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-usuario" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel-usuario" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Seção de Obras por Gênero -->
+    {% for genero_info in obras_por_genero %}
+    <section class="mb-5">
+        <h2 class="text-center">{{ genero_info.genero }}</h2>
+        <div id="carousel-{{ genero_info.genero|lower }}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-inner text-center">
+                {% for obra in genero_info.obras|batch(5) %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                    <div class="d-flex justify-content-center">
+                        {% for item in obra %}
+                        <div class="card mx-2" style="width: 18rem;">
+                            <img src="{{ url_for('static', filename='uploads/capas/' + item.capa) }}" 
+                                 class="rounded" style="width: 285px; height: 300px; object-fit: cover;" 
+                                 alt="Capa de {{ item.titulo }}">
+                            <div class="card-body">
+                                <h5 class="card-title  text-black">{{ item.titulo }}</h5>
+                                <h6 class="card-text ">{{ item.etapa }}</h5>
+                                <p class="card-text">{{ item.sinopse[:100] }}...</p>
+                                <p class="card-text">{{ item.tags }}...</p>
+                                <a href="{{ url_for('obra_detalhes', obra_id=item.id) }}" class="btn btn-primary btn-sm">Detalhes</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ genero_info.genero|lower }}" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ genero_info.genero|lower }}" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Próximo</span>
+            </button>
+        </div>
+    </section>
+    {% endfor %}
+</div>
+{% endblock %}

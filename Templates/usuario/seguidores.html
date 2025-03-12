@@ -1,0 +1,152 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <!-- Abas de Navegação -->
+        <ul class="nav nav-tabs" id="perfilTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">Informações e Obras</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="postagem-tab" data-bs-toggle="tab" data-bs-target="#postagem" type="button" role="tab">Postagem</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="seguindo-tab" data-bs-toggle="tab" data-bs-target="#seguindo" type="button" role="tab">Seguindo</button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3" id="perfilTabsContent">
+            <!-- Informações e Obras -->
+            <div class="tab-pane fade show active" id="info" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-3">
+                        {% if usuario.imagens %}
+                            <img src="{{ url_for('static', filename='uploads/perfil/' + usuario.imagens) }}" alt="Imagem de Perfil" class="img-fluid rounded-circle">
+                        {% else %}
+                            <div class="img-fluid rounded-circle" style="width: 100px; height: 100px; background-color: #007bff; display: flex; justify-content: center; align-items: center; color: white; font-size: 36px;">
+                                {{ usuario.username[:2]|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-9">
+                        <h1>{{ usuario.username }}</h1>
+                        <p>{{ usuario.bio }}</p>
+                        <button class="btn btn-primary me-2">Seguir</button>
+                        <span class="badge bg-secondary">{{ seguidores|length }} Seguidores</span>
+                    </div>
+                </div>
+                <h2 class="mt-4">Obras de {{ usuario.username }}</h2>
+                <div class="row">
+                    {% for obra in obras %}
+                        <div class="col-md-3 mb-4">
+                            <div class="card">
+                                <img src="{{ url_for('static', filename='uploads/capas/' + obra.capa) }}" class="card-img-top" alt="Capa de {{ obra.titulo }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ obra.titulo }}</h5>
+                                    <p class="card-text">{{ obra.sinopse[:100] }}...</p>
+                                    <a href="{{ url_for('obra_detalhes', obra_id=obra.id) }}" class="btn btn-primary btn-sm">Detalhes</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+        <!-- Botão para Criar Nova Postagem -->
+        <button id="toggleForm" class="btn btn-outline-primary mb-3">
+            <i class="fas fa-pencil-alt"></i> Criar Postagem
+        </button>
+
+        <!-- Formulário para Criar Postagem -->
+        <div id="postForm" class="mb-4" style="display:none;">
+            <form action="{{ url_for('perfil', user_id=usuario.id) }}" method="POST">
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Título da Postagem</label>
+                    <input type="text" id="titulo" name="titulo" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="conteudo" class="form-label">Conteúdo da Postagem</label>
+                    <textarea id="conteudo" name="conteudo" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Criar Postagem</button>
+            </form>
+        </div>
+
+        <!-- Exibindo as Postagens de Forma Separada -->
+        <div class="row">
+            {% for postagem in postagens %}
+                <div class="col-md-6 mb-4">
+                    <div class="card post-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <div class="user-info">
+                                {% if usuario.imagens %}
+                            <img src="{{ url_for('static', filename='uploads/perfil/' + usuario.imagens) }}" alt="Imagem de Perfil" class="img-fluid rounded-circle">
+                        {% else %}
+                            <div class="img-fluid rounded-circle" style="width: 100px; height: 100px; background-color: #007bff; display: flex; justify-content: center; align-items: center; color: white; font-size: 36px;">
+                                {{ usuario.username[:2]|upper }}
+                            </div>
+                        {% endif %}
+                            </div>
+                            <span class="post-date">{{ postagem.data_postagem.strftime('%d/%m/%Y %H:%M') }}</span>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ postagem.titulo }}</h5>
+                            <p class="card-text">{{ postagem.conteudo }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-muted">Nenhuma postagem encontrada.</p>
+            {% endfor %}
+        </div>
+        <script>
+            document.getElementById('toggleForm').addEventListener('click', function() {
+                var form = document.getElementById('postForm');
+                if (form.style.display === 'none' || form.style.display === '') {
+                    form.style.display = 'block';  // Exibir o formulário
+                } else {
+                    form.style.display = 'none';  // Ocultar o formulário
+                }
+            });
+        </script>
+    </div>
+            <!-- Seguindo -->
+            <div class="tab-pane fade" id="seguindo" role="tabpanel">
+                <h2>Seguindo</h2>
+                <div class="row">
+                    {% for seguindo in usuario.seguindo %}
+                        <div class="col-md-3 mb-4">
+                            <div class="card">
+                                <img src="{{ url_for('static', filename='uploads/perfil/' + (seguindo.seguido.imagens or 'default_image.png')) }}" class="card-img-top" alt="Imagem de {{ seguindo.seguido.username }}">
+
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ seguindo.seguido.username }}</h5>
+                                    <a href="{{ url_for('seguidores', user_id=seguindo.seguido.id) }}" class="btn btn-secondary btn-sm">Ver Perfil</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+<script>
+       // Impede que a troca de abas altere a URL ou recarregue a página
+    document.querySelectorAll('.nav-link').forEach(function(tab) {
+        tab.addEventListener('click', function(e) {
+            // Evitar que a URL seja alterada ao trocar de aba
+            e.preventDefault();
+            var targetTab = tab.getAttribute('data-bs-target');
+            
+            // Exibir a aba correspondente
+            document.querySelector('.tab-pane.active').classList.remove('show', 'active');
+            document.querySelector(targetTab).classList.add('show', 'active');
+            
+            // Atualizar a URL sem recarregar a página
+            history.replaceState(null, '', window.location.pathname);
+        });
+    });
+</script>

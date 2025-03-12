@@ -1,0 +1,122 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+
+<!-- Perfil do Usuário -->
+<div class="d-flex align-items-center mb-4 p-3 rounded">
+    {% if usuario.imagem %}
+                            <!-- Se houver imagem de perfil, exibir -->
+                            <img src="{{ url_for('static', filename='uploads/' + usuario.imagem) }}" 
+                                alt="Imagem de Perfil" class="rounded-circle me-3" 
+                                style="width: 50px; height: 50px; object-fit: cover;">
+                        {% else %}
+                            <!-- Se não houver imagem, exibir iniciais do username -->
+                            <div class="d-flex align-items-center justify-content-center rounded-circle me-3"
+                                 style="width: 50px; height: 50px; background-color: #6D0A8A; color: white; font-weight: bold; font-size: 20px;">
+                                {{ usuario.username[:2]|upper }}
+                            </div>
+                        {% endif %}
+    <div>
+        <h3 class="mb-1">{{ usuario.username }}</h3>
+        <p class="mb-1">{{ obras|length }} Livros Publicados</p>
+        <span class="badge bg-secondary">{{ seguidores|length }} Seguidores</span></center>
+    </div>
+</div>
+
+    <div class="container mt-5">
+        
+        <!-- Abas de Navegação -->
+        <ul class="nav nav-tabs" id="perfilTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">Informações e Obras</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="postagem-tab" data-bs-toggle="tab" data-bs-target="#postagem" type="button" role="tab">Postagem</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="seguindo-tab" data-bs-toggle="tab" data-bs-target="#seguindo" type="button" role="tab">Seguindo</button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3" id="perfilTabsContent">
+            <!-- Informações e Obras -->
+            <div class="tab-pane fade show active" id="info" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-3 pe-4">
+                        <h5>Biografia</h5>
+                        <p>{{ usuario.bio }}</p>
+                        <h5>Seguidores</h5>
+                        <div class="d-flex flex-wrap">
+                            {% for seguidor in seguidores %}
+                                <img src="{{ url_for('static', filename='uploads/' + seguidor.imagens) if seguidor.imagens else url_for('static', filename='img/default-profile.png') }}" 
+                                     alt="Imagem de {{ seguidor.username }}" class="img-fluid rounded-circle me-2 mb-2" style="width: 40px; height: 40px;">
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <h2 class="mt-4">Obras de {{ usuario.username }}</h2>
+                        <div class="row">
+                            {% for obra in obras %}
+                            <div class="card mx-4" style="width: 20rem;">
+                                <img src="{{ url_for('static', filename='uploads/capas/' + obra.capa) }}" 
+                                     class="rounded" style="width: 285px; height: 300px; object-fit: cover; " 
+                                     alt="Capa de {{ obra.titulo }}">
+                                <div class="card-body">
+                                    <h5 class="card-title text-black">{{ obra.titulo }}</h5>
+                                    <p class="card-text">{{ obra.etapa }}...</p>
+                                    <p class="card-text">{{ obra.sinopse[:100] }}...</p>
+                                    <a href="{{ url_for('obra_detalhes', obra_id=obra.id) }}" class="btn btn-primary btn-sm">Detalhes</a>
+                                </div>
+                            </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Postagens -->
+            <div class="tab-pane fade" id="postagem" role="tabpanel">
+                <h2>Conversas</h2>
+                <button id="toggleForm" class="btn btn-outline-primary mb-3">
+                    <i class="fas fa-pencil-alt"></i> Criar Postagem
+                </button>
+
+                <div id="postForm" class="mb-4" style="display:none;">
+                    <form action="{{ url_for('perfil', user_id=usuario_logado.id) }}" method="POST">
+                        <div class="mb-3">
+                            <label for="titulo" class="form-label text-black">Título da Postagem</label>
+                            <input type="text" id="titulo" name="titulo" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="conteudo" class="form-label text-black">Conteúdo da Postagem</label>
+                            <textarea id="conteudo" name="conteudo" class="form-control" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Criar Postagem</button>
+                    </form>
+                </div>
+
+                <h4>Postagens Recentes</h4>
+                <div class="list-group">
+                    {% for postagem in postagens %}
+                        <div class="list-group-item">
+                            <h5>{{ postagem.titulo }}</h5>
+                            <p>{{ postagem.conteudo }}</p>
+                            <small class="text-muted">Publicado em {{ postagem.data_postagem.strftime('%d/%m/%Y %H:%M') }}</small>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Nenhuma postagem encontrada.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script para alternar o formulário -->
+    <script>
+        document.getElementById('toggleForm').addEventListener('click', function() {
+            var form = document.getElementById('postForm');
+            form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
+        });
+    </script>
+{% endblock %}

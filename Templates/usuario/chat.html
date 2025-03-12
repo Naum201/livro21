@@ -1,0 +1,30 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Conversando com {{ destinatario.username }}</h1>
+
+    <!-- Exibe todas as mensagens -->
+    <div id="mensagens" class="mb-4" style="max-height: 500px; overflow-y: scroll;">
+        {% for mensagem in mensagens %}
+            <div class="d-flex mb-3 {% if mensagem.usuario.id == usuario_logado.id %}justify-content-end{% else %}justify-content-start{% endif %}">
+                <div class="card p-3" style="max-width: 60%; background-color: {% if mensagem.usuario.id == usuario_logado.id %}#81F781{% else %}#f8d7da{% endif %};">
+                    <p class="mb-1">    
+                        <p><strong>{{ mensagem.usuario.username }}:</strong><p>
+                        {{ mensagem.texto }}
+                    </p>
+                    <small class="text-muted">{{ mensagem.timestamp.strftime('%d/%m/%Y %H:%M') }}</small>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Formulário para enviar nova mensagem -->
+    <form method="POST">
+        <div class="form-group">
+            <textarea name="mensagem" class="form-control" rows="3" placeholder="Digite sua mensagem..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Enviar</button>
+    </form>
+</div>
+{% endblock %}

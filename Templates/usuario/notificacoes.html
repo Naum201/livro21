@@ -1,0 +1,53 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>Notificações</h1>
+        <div class="list-group" id="notificacoes-list">
+            {% if notificacoes %}
+                {% for notificacao in notificacoes %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center" id="notificacao-{{ notificacao.id }}" data-visto="{{ notificacao.visto }}">
+                        <div>
+                            <strong>{{ notificacao.mensagem }}</strong><br>
+                            <small class="text-muted">Recebido em: {{ notificacao.data_criacao.strftime('%d/%m/%Y %H:%M') }}</small>
+                        </div>
+                        <div>
+                            {% if not notificacao.visto %}
+                                <!-- Botão para marcar como visto -->
+                                <button class="btn btn-sm btn-primary" onclick="marcarComoVisto({{ notificacao.id }})">Marcar como visto</button>
+                            {% else %}
+                                <button class="btn btn-sm btn-secondary" disabled>Visto</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-muted">Nenhuma notificação para exibir.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function marcarComoVisto(id) {
+            // Envia uma requisição para marcar a notificação como vista
+            fetch(`/marcar_como_visto/${id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ visto: true })  // Enviando o corpo da requisição
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Atualizar a interface para refletir a mudança
+                    const notificacaoItem = document.getElementById(`notificacao-${id}`);
+                    notificacaoItem.querySelector('button').disabled = true;  // Desabilitar o botão
+                    notificacaoItem.querySelector('button').innerText = 'Visto';  // Alterar o texto do botão
+                    notificacaoItem.setAttribute('data-visto', 'true');  // Marcar como 'vista'
+                    alert("Notificação marcada como vista.");
+                } else {
+                    alert("Erro ao marcar como visto: " + data.message);
+                }
+            });
+        }
+    </script>
+{% endblock %}

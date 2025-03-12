@@ -1,0 +1,78 @@
+{% extends 'base_logged.html' %}
+
+{% block title %}Formulário de Projeto de Leitura{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Cadastro de Projeto de Leitura</h2>
+
+    <!-- Exibir mensagens de erro ou sucesso -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Se o usuário já tiver um projeto, exibe o projeto existente -->
+    {% if projeto_existente %}
+        <div class="alert alert-info">
+            <h4>Você já está associado ao projeto: {{ projeto_existente.nome_projeto }}</h4>
+            <p><strong>Descrição:</strong> {{ projeto_existente.descricao }}</p>
+            <p><strong>Data de Início:</strong> {{ projeto_existente.data_inicio.strftime('%Y-%m-%d') }}</p>
+            {% if projeto_existente.data_fim %}
+                <p><strong>Data de Término:</strong> {{ projeto_existente.data_fim.strftime('%Y-%m-%d') }}</p>
+            {% else %}
+                <p><strong>Data de Término:</strong> Não definida</p>
+            {% endif %}
+        </div>
+    {% else %}
+        <form method="POST">
+            <!-- Nome do Projeto -->
+            <div class="form-group mb-3">
+                <label for="nome_projeto">Nome do Projeto</label>
+                <input type="text" class="form-control" id="nome_projeto" name="nome_projeto" {% if projeto_existente %} disabled {% endif %}>
+            </div>
+
+            <!-- Nome do Administrador -->
+            <div class="form-group mb-3">
+                <label for="admin_projeto">Nome do Administrador</label>
+                <input type="text" class="form-control" id="admin_projeto" name="admin_projeto" {% if projeto_existente %} disabled {% endif %}>
+            </div>
+
+            <!-- Descrição do Projeto -->
+            <div class="form-group mb-3">
+                <label for="descricao">Descrição</label>
+                <textarea class="form-control" id="descricao" name="descricao" rows="4" {% if projeto_existente %} disabled {% endif %}></textarea>
+            </div>
+
+            <!-- Data de Início -->
+            <div class="form-group mb-3">
+                <label for="data_inicio">Data de Início</label>
+                <input type="date" class="form-control" id="data_inicio" name="data_inicio" {% if projeto_existente %} disabled {% endif %}>
+            </div>
+
+            <!-- Data de Término -->
+            <div class="form-group mb-3">
+                <label for="data_fim">Data de Término (opcional)</label>
+                <input type="date" class="form-control" id="data_fim" name="data_fim" {% if projeto_existente %} disabled {% endif %}>
+            </div>
+
+            <!-- Seleção de Projeto Existente -->
+            <div class="form-group mb-3">
+                <label for="projeto_existente">Ou escolha um projeto existente:</label>
+                <select class="form-control" id="projeto_existente" name="projeto_existente">
+                    <option value="">Selecione um projeto</option>
+                    {% for projeto in projetos %}
+                    <option value="{{ projeto.id }}" {% if projeto_existente and projeto.id == projeto_existente.id %} selected {% endif %}>{{ projeto.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Botão de Enviar -->
+            <button type="submit" class="btn btn-primary">Cadastrar Projeto</button>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}

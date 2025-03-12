@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <!-- Cabeçalho com imagem de fundo -->
+    <header class="bg-dark text-white text-center py-5" 
+            style="background-image: url('https://example.com/your-background-image.jpg'); background-size: cover; background-position: center;">
+        <div class="container">
+            <h1>Bem-vindo à Livro +</h1>
+            <p>Explore, compartilhe e interaja com histórias incríveis</p>
+            <a href="{{ url_for('cadastro') }}" class="btn btn-primary btn-lg">Comece a escrever agora</a>
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Escreva</a>
+        </div>
+    </header>
+
+    <!-- Seção 1: O que você pode fazer -->
+    <section class="py-4">
+        <div class="container">
+            <h3>O que você pode fazer:</h3>
+            <ul>
+                <li>Criar suas próprias obras</li>
+                <li>Explorar obras de outros escritores</li>
+                <li>Interagir com a comunidade de escritores</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Seção 2: Como começar -->
+    <section class="py-4">
+        <div class="container">
+            <h3>Como começar:</h3>
+            <p>Faça o login ou crie uma conta para começar a compartilhar suas histórias e interagir com outros escritores.</p>
+        </div>
+    </section>
+
+    <!-- Seção 3: Barra lateral e destaques -->
+    <section class="py-4">
+        <div class="container">
+            <div class="row">
+                <!-- Coluna principal: Feed de obras -->
+                <div class="col-md-8 mb-4">
+                    <h3>Feed de Obras</h3>
+                    <!-- Aqui ficaria o feed de obras -->
+                    <p>Conteúdo do feed de obras será adicionado aqui.</p>
+                </div>
+                <!-- Coluna lateral: Destaques -->
+                <div class="col-md-4">
+                    <div class="sticky-top">
+                        <h3>Hall da Fama</h3>
+                        <ul class="list-group">
+                            {% for obra in obras_recomendadas %}
+                            <div class="card">
+                                <img src="{{ url_for('static', filename='uploads/capas/' + obra.capa) if obra.capa else url_for('static', filename='uploads/capas/default.jpg') }}" 
+     style="width: 150px; height: 150px" class="card-img-top" alt="Capa de {{ obra.titulo }}">
+
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ obra.titulo }}</h5>
+                                    <p class="card-text"><strong>Etapa:</strong> {{ obra.etapa }}</p>
+                                    <p class="card-text"><strong>Sinopse:</strong> {{ obra.sinopse }}</p>
+                                    <a href="{{ url_for('obra_detalhes', obra_id=obra.id) }}" class="btn btn-primary">Ler</a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>              
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,155 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Home - Dashboard Admin{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Card de Livros -->
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Livros</h5>
+                <p class="card-text">{{ quantidade_livros }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Usuários Ativos -->
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Usuários Ativos</h5>
+                <p class="card-text">{{ quantidade_usuarios }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Problemas -->
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">Problemas</h5>
+                <p class="card-text">{{ quantidade_problemas }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Usuários que Saíram -->
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Usuários que Saíram</h5>
+                <p class="card-text">{{ quantidade_usuarios_sairam }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Plataformas -->
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Plataformas</h5>
+                <p class="card-text">{{ quantidade_plataformas }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Plágios -->
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-dark">
+            <div class="card-body">
+                <h5 class="card-title">Plágios</h5>
+                <p class="card-text">{{ quantidade_plagios }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card de Projetos de Leituras -->
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Projetos de Leituras</h5>
+                <p class="card-text">{{ projetos_leituras }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Listagem de Gêneros -->
+<div class="container mt-5">
+    <h5 class="card-title">Gêneros</h5>
+    <div class="row">
+        {% if generos %}
+            {% for genero in generos %}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ genero.nome }}</h5>
+                            <p class="card-text">Esse é um gênero de livros que pode ser usado para categorizar suas obras.</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Nenhum gênero encontrado.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Tickets de Plágio Pendentes -->
+<div class="container mt-5">
+    <h5 class="card-title">Tickets de Plágio Pendentes</h5>
+    <div class="row">
+        {% if tickets_plagio %}
+            {% for ticket in tickets_plagio %}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Ticket #{{ ticket.id }}</h5>
+                            <p class="card-text">Tipo: {{ ticket.tipo_plagio }}</p>
+                            <p class="card-text">Descrição: {{ ticket.descricao }}</p>
+                            <p class="card-text">Usuário: {{ ticket.usuario.nome }}</p>
+                            {% if ticket.tipo_plagio == 'Obra' %}
+                                <p class="card-text">Obra: {{ ticket.obra.titulo }}</p>
+                            {% elif ticket.tipo_plagio == 'Capitulo' %}
+                                <p class="card-text">Capítulo: {{ ticket.capitulo.titulo }}</p>
+                            {% endif %}
+                            <p class="card-text">Data: {{ ticket.data_reportado.strftime('%d/%m/%Y') }}</p>
+                            <p class="card-text">Status: {{ ticket.status }}</p>
+                            <a href="{{ url_for('resolver_plagio', ticket_id=ticket.id) }}" class="btn btn-success">Marcar como Resolvido</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Nenhum ticket de plágio pendente.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Projetos de Leitura -->
+<div class="container mt-5">
+    <h5 class="card-title">Projetos de Leitura</h5>
+    <div class="row">
+        {% if projetos_de_leituras %}
+            {% for projeto in projetos_de_leituras %}
+                <div class="col-md-3 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{ url_for('detalhes_projeto', projeto_id=projeto.id) }}">
+                                    {{ projeto.nome }}
+                                </a>
+                            </h5>
+                            <p>{{ projeto.descricao }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Não há projetos de leitura cadastrados.</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

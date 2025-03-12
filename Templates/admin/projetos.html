@@ -1,0 +1,26 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Listagem de Projetos de Leitura{% endblock %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h5 class="card-title">Projetos de Leitura</h5>
+        <div class="row">
+            {% if projetos %}
+                {% for projeto in projetos %}
+                    <div class="col-md-3 mb-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ projeto.nome_projeto }}</h5>
+                                <p class="card-text">{{ projeto.descricao[:100] }}...</p> <!-- Exibe uma parte da descrição -->
+                                <a href="{{ url_for('detalhes_projeto', projeto_id=projeto.id) }}" class="btn btn-primary">Ver Detalhes</a> <!-- Link para detalhes do projeto -->
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>Nenhum projeto de leitura encontrado.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

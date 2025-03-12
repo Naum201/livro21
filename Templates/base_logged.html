@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livro +</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base_logged.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- CSS do Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- JS do Bootstrap (antes do fechamento da tag body) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+
+    <style>
+
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #6D0A8A;
+    color: #ffffff;
+}
+        /* Tornar a barra de pesquisa maior */
+        .search-bar {
+            flex: 1;
+            max-width: 600px; /* Define um tamanho máximo */
+        }
+
+        .search-bar input {
+            height: 50px; /* Altura maior */
+            font-size: 1.2rem; /* Texto maior */
+        }
+
+        .search-bar button {
+            height: 50px;
+            font-size: 1.2rem;
+            border-radius: 40px;
+
+        }
+
+        .navbar .navbar-nav {
+            flex-wrap: nowrap; /* Impede quebra de linha nos itens da barra de navegação */
+        }
+        .profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Barra de navegação (Menu) no topo -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm fixed-top">
+            <div class="container-fluid">
+                <!-- Logo e Menus à Esquerda -->
+                <a class="navbar-brand" href="{{ url_for('home') }}"> <img  src="{{ url_for('static', filename='img/logo.png')}}" alt="" srcset="" style="height: 50px; width: 50px;"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <!-- Menu Explorar -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Explorar
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{{ url_for('explorar', filtro='todas') }}">Todas</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('explorar', filtro='populares') }}">Populares</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('explorar', filtro='recentes') }}">Recentes</a></li>
+                            </ul>
+                        </li>
+                         <!-- Menu Gêneros - Dinâmico -->
+                         <!-- Menu Gêneros - Dinâmico -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Gêneros
+                        </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=4) }}">Aventura</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=11) }}">Comédia</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=9) }}">Drama</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=10) }}">Fanfic</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=6) }}">Fantasia</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=1) }}">Ficção</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=7) }}">Histórico</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=5) }}">Mistério</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=3) }}">Romance</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=8) }}">Sci-Fi</a></li>
+                                    <li><a class="dropdown-item" href="{{ url_for('explorar_por_genero', genero_id=2) }}">Terror</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                    
+                    <form class="d-flex search-bar mx-auto" action="{{ url_for('pesquisar') }}" method="GET">
+                        <input class="form-control me-2" type="search" placeholder="Pesquisar histórias, autores, gêneros..." aria-label="Pesquisar" name="search">
+                        <button class="btn btn-primary" type="submit">Buscar</button>
+                    </form>
+                    
+    
+                    <!-- Menu Escrever e Ícone do Usuário à Direita -->
+                    <ul class="navbar-nav">
+                        <!-- Menu Escrever -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWrite" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Escrever
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownWrite">
+                                <li><a class="dropdown-item" href="{{ url_for('criar_obras') }}">Criar uma nova história</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('minhas_obras') }}">Minhas Obras</a></li>
+                            </ul>
+                        </li>
+    
+                        {% if usuario_logado %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {% if usuario_logado.imagem %}
+                                <center><img src="{{ url_for('static', filename='uploads/' + usuario.imagens) if usuario.imagens else url_for('static', filename='img/default-profile.png') }}" 
+                                    alt="Imagem de Perfil" class="img-fluid rounded-circle me-3" style="width: 80px; height: 80px;">
+                                {% else %}
+                                    <div class="profile-placeholder d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; border-radius: 50%; background-color: #6D0A8A; color: white; font-weight: bold;">
+                                        {{ usuario_logado.username[:2]|upper }}
+                                    </div>
+                                {% endif %}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUser">
+                                <li><a class="dropdown-item" href="{{ url_for('perfil', user_id=usuario_logado.id) }}">Meu perfil</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('caixa_de_entrada') }}">Caixa de Entrada</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('notificacoes') }}">Notificações</a></li>
+                                <li><a class="dropdown-item" href="{{ url_for('biblioteca') }}">Biblioteca</a></li>  <!-- Link para a biblioteca -->
+                                <li><a class="dropdown-item" href="{{ url_for('configuracoes') }}">Configuracoes</a></li>  <!-- Link para a biblioteca -->
+                                <li><a class="dropdown-item" href="{{ url_for('suporte') }}">Suporte</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url_for('logout') }}">Sair</a></li>
+                            </ul>
+                            
+                        </li>
+                    {% else %}
+                        <p>Usuário não encontrado ou não logado.</p>
+                    {% endif %}
+                    
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Conteúdo da Página -->
+        <div class="container mt-5 pt-5">
+            {% block content %}
+            {% endblock %}
+        </div>
+
+        <!-- Rodapé -->
+        <footer class="mt-4 text-center">
+            <p>© 2025 Plataforma para Escritores. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    
+</body>
+</html>

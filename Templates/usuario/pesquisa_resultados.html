@@ -1,0 +1,112 @@
+{% extends 'base_logged.html' %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <h2>Resultados para: "{{ query }}"</h2>
+
+    <!-- Abas -->
+    <ul class="nav nav-tabs" id="searchTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link active text-black" id="obras-tab" data-bs-toggle="tab" href="#obras" role="tab" aria-controls="obras" aria-selected="true">Obras</a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link text-black" id="usuarios-tab" data-bs-toggle="tab" href="#usuarios" role="tab" aria-controls="usuarios" aria-selected="false">Usuários</a>
+        </li>
+    </ul>
+
+    <!-- Conteúdo das Abas -->
+    <div class="tab-content" id="searchTabsContent">
+        <!-- Abas para Obras -->
+        <div class="tab-pane fade show active" id="obras" role="tabpanel" aria-labelledby="obras-tab">
+            <h3>Obras</h3>
+            
+            <!-- Lista de Obras -->
+            <div class="row">
+                {% if obras %}
+                    {% for obra in obras %}
+                        <div class="col-md-3 bg-transparent">
+                            <div class="card mb-4">
+                                {% if obra.capa %}
+                                    <img src="{{ url_for('static', filename='uploads/capas/' + obra.capa) }}" 
+                                    class="rounded" style="width: 290px; height: 320px;" 
+                                    alt="Capa de {{ obra.titulo }}">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="{{ obra.titulo }}">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ obra.titulo }}</h5>
+                                    <p class="card-text">{{ obra.sinopse[:150] }}...</p>
+                                    <a href="{{ url_for('obra_detalhes', obra_id=obra.id) }}" class="btn btn-primary">Ver mais</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">Nenhuma obra encontrada.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Abas para Usuários -->
+        <div class="tab-pane fade" id="usuarios" role="tabpanel" aria-labelledby="usuarios-tab">
+            <h3>Usuários</h3>
+            {% if usuarios %}
+                <ul class="list-unstyled">
+                {% for usuario in usuarios %}
+                    <li class="d-flex align-items-center mb-3">
+                        {% if usuario.imagem %}
+                            <!-- Se houver imagem de perfil, exibir -->
+                            <img src="{{ url_for('static', filename='uploads/' + usuario.imagem) }}" 
+                                alt="Imagem de Perfil" class="rounded-circle me-3" 
+                                style="width: 50px; height: 50px; object-fit: cover;">
+                        {% else %}
+                            <!-- Se não houver imagem, exibir iniciais do username -->
+                            <div class="d-flex align-items-center justify-content-center rounded-circle me-3"
+                                 style="width: 50px; height: 50px; background-color: #6D0A8A; color: white; font-weight: bold; font-size: 20px;">
+                                {{ usuario.username[:2]|upper }}
+                            </div>
+                        {% endif %}
+                        <div>
+                            <a href="{{ url_for('seguidores', user_id=usuario.id) }}" class="fw-bold text-decoration-none text-black">
+                                {{ usuario.username }} - {{ usuario.nome }}
+                            </a>
+                            <p class="mb-0 text-muted">Obras: {{ usuario.obras_count }} | Seguidores: {{ usuario.seguidores_count }}</p>
+                        </div>
+
+                        <form id="follow-form-{{ usuario.id }}" action="{{ url_for('seguir', user_id=usuario.id) }}" method="post" onsubmit="seguirUsuario(event, {{ usuario.id }})" class="ms-auto">
+                            <button type="submit" class="btn btn-primary">
+                                {% if usuario.seguir %} Seguir {% else %} Deixar de seguir {% endif %}
+                            </button>
+                        </form>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">Nenhum usuário encontrado.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+function seguirUsuario(event, userId) {
+    event.preventDefault(); // Evita o redirecionamento da página
+
+    fetch(`/seguir/${userId}`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest' // Indica que é uma requisição AJAX
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert("Você agora segue esse usuário!");
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => console.error('Erro:', error));
+}
+</script>
+{% endblock %}

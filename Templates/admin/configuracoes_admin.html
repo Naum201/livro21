@@ -1,0 +1,14 @@
+{% extends 'base_admin.html' %}
+
+{% block title %}Configurações - Dashboard Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3>Configurações do Sistema</h3> 
+    <!-- Link para cadastrar gênero -->
+    <div class="mt-3">
+        <a href="{{ url_for('cadastrar_genero') }}" class="btn btn-secondary">Cadastrar Novo Gênero</a>
+        <a href="{{ url_for('adicionar_plataforma') }}" class="btn btn-secondary">Adicionar Plataforma</a>
+    </div>
+</div>
+{% endblock %}

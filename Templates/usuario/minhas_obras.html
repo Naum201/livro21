@@ -1,0 +1,35 @@
+{% extends 'base_logged.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Minhas Obras</h2>
+    
+    {% if obras %}
+        <div class="row">
+            {% for obra in obras %}
+                <div class="col-md-4">
+                    <div class="card">
+                        {% if obra.capa %}
+                        <img src="{{ url_for('static', filename='uploads/capas/' + obra.capa) }}" 
+                        class="rounded" style="width: 285px; height: 300px;" 
+                        alt="Capa de {{ obra.titulo }}">
+                            <img src="{{ url_for('static', filename='uploads/default_capa.jpg') }}" class="card-img-top" alt="{{ obra.titulo }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ obra.titulo }}</h5>
+                            <p class="card-text"><strong>Classificação:</strong> {{ obra.classificacao }}</p>
+                            <p class="card-text"><strong>Sinopse:</strong> {{ obra.sinopse }}</p>
+                            <p class="card-text"><strong>Capítulos:</strong> {{ obra.quantidade_capitulos }}</p>
+                            <p class="card-text"><strong>Votos:</strong> {{ obra.quantidade_votos }}</p>
+                            <p class="card-text"><strong>Comentários:</strong> {{ obra.quantidade_comentarios }}</p>
+                            <a href="{{ url_for('detalhes_obra', obra_id=obra.id) }}" class="btn btn-primary">Ver Detalhes</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>Você ainda não tem obras cadastradas.</p>
+    {% endif %}
+</div>
+{% endblock %}

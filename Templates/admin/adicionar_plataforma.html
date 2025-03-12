@@ -1,0 +1,16 @@
+{% extends "base_admin.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Adicionar Plataforma</h2>
+    <form method="POST" action="{{ url_for('adicionar_plataforma') }}">
+        <div class="form-group">
+            <label for="nome">Nome da Plataforma</label>
+            <input type="text" class="form-control" id="nome" name="nome" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Adicionar</button>
+    </form>
+    <br>
+    <a href="{{ url_for('home') }}">Voltar para a home</a>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+<div class="container mt-5 pt-5">
+    <h2>Obras do Gênero: {{ genero.nome }}</h2>
+    
+    <div class="row">
+        {% if obras %}
+            {% for obra in obras %}
+                <div class="col-md-3 bg-transparent">
+                    <div class="card mb-4">
+                        {% if obra.capa %}
+                        <img src="{{ url_for('static', filename='uploads/capas/' + obra.capa) }}" 
+                        class="rounded" style="width: 286; height: 320px;" 
+                        alt="Capa de {{ obra.titulo }}">
+                        {% else %}
+                            <img src="https://via.placeholder.com/150" class="card-img-top" alt="{{ obra.titulo }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ obra.titulo }}</h5>
+                            <p class="card-text">{{ obra.sinopse[:150] }}...</p>
+                            <a href="{{ url_for('obra_detalhes', obra_id=obra.id) }}" class="btn btn-primary">Ver mais</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">Não há obras disponíveis para este gênero.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Caixa de Entrada</h1>
+
+    <!-- Formulário de pesquisa -->
+    <form method="POST" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="pesquisa" class="form-control" placeholder="Pesquise por usuário" required>
+            <button type="submit" class="btn btn-outline-primary">Pesquisar</button>
+        </div>
+    </form>
+
+    <!-- Se houver resultados de pesquisa, exibe os usuários encontrados -->
+    {% if usuarios_pesquisados %}
+    <div class="mb-4">
+        <h4>Usuários encontrados:</h4>
+        <ul class="list-group">
+            {% for usuario in usuarios_pesquisados %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{{ url_for('chat', id=usuario.id) }}" class="text-decoration-none text-primary">
+                        {{ usuario.username }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Exibe todas as conversas -->
+    <div>
+        <h4>Conversas:</h4>
+        <ul class="list-group">
+            {% for conversa in conversas %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="{{ url_for('chat', id=conversa[1].id) }}" class="text-decoration-none">
+                        <strong>{{ conversa[1].username }}</strong>
+                    </a>
+                    <span class="badge bg-secondary text-light">{{ conversa[0].texto[:30] }}...</span>  <!-- Exibe um trecho da mensagem -->
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

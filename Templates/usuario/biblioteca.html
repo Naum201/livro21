@@ -1,0 +1,30 @@
+{% extends "base_logged.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>Minha Biblioteca</h1>
+
+        {% if usuario_logado %}
+            {% if obras %}
+                <div class="list-group">
+                    {% for obra in obras %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ obra.titulo }}</strong><br>
+                                <small class="text-muted">Gênero: {{ obra.genero.nome }}</small><br>
+                                <small class="text-muted">Status: {{ obra.status }}</small>
+                            </div>
+                            <div>
+                                <a href="{{ url_for('obra', obra_id=obra.id) }}" class="btn btn-sm btn-info">Ver Obra</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-muted">Você não está lendo nenhuma obra no momento.</p>
+            {% endif %}
+        {% else %}
+            <p class="text-muted">Você precisa estar logado para acessar sua biblioteca.</p>
+        {% endif %}
+    </div>
+{% endblock %}
